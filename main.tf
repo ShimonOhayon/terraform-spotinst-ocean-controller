@@ -49,6 +49,12 @@ resource "kubernetes_service_account" "this" {
   }
 
   automount_service_account_token = true
+  lifecycle {
+    // We need a place to move the existing node are changed all the time.
+    ignore_changes = [
+      image_pull_secret
+    ]
+  }
 }
 
 resource "kubernetes_cluster_role" "this" {
@@ -566,6 +572,12 @@ resource "kubernetes_deployment" "this" {
         }
       }
     }
+  }
+  lifecycle {
+    // We need a place to move the existing node are changed all the time.
+    ignore_changes = [
+      spec[0].template[0].spec[0].toleration
+    ]
   }
 }
 
